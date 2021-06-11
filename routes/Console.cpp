@@ -1,25 +1,43 @@
 #include "../vendor/commander/Commander.cpp"
 #include "../app/controllers/Example.cpp"
+#include "../app/controllers/RegistrationQueue.cpp"
+#include "../app/controllers/StudentSelection.cpp"
 
 class Console
 {
     private:
         bool running;
-        char input[60];
+        bool regTime;
+        string input;
+
+        RegistrantQueueType registrants;
+        StudentSelectionChainType candidates;
 
         string getInstruction() {
             cout << "> ";
-            cin.getline(this->input, 60);
+            cin >> this->input;
             return this->input;
         }
 
         void routes() {
             string instruction = this->input;
+            string registrantTemp;
 
-            Commander::get(instruction).address("yo help", Example::process);
-            Commander::get(instruction).address("", Example::process);
+            if (instruction.compare("daftar") == 0 && this->regTime)
+                this->registrants = RegistrationQueue::from(this->registrants).add();
+            
+            else if (instruction.compare("panggil") == 0 && this->regTime) {
+                registrantTemp = RegistrationQueue::from(this->registrants).getRearTestId();
+                this->registrants = RegistrationQueue::from(this->registrants).call();
+                if (registrantTemp.compare("0") != 0)
+                    this->candidates = *StudentSelection::from(&this->candidates).add(registrantTemp);
+            }
 
-            if (instruction.compare(".exit") == 0) this->running = false;
+            else if (instruction.compare(".exit") == 0) 
+                this->running = false;
+
+            else 
+                cout << "Perintah tak ditemukan!" << endl << endl;
         }
 
         void run() {
@@ -32,6 +50,10 @@ class Console
     public:
         Console() {
             this->running = true;
+            this->regTime = true;
+            this->registrants.count = 0;
+            this->registrants.front = NULL;
+            this->registrants.rear = NULL;
             this->run();
         }
 
