@@ -1,5 +1,4 @@
 #include "../vendor/commander/Commander.cpp"
-#include "../app/controllers/Example.cpp"
 #include "../app/controllers/RegistrationQueue.cpp"
 #include "../app/controllers/StudentSelection.cpp"
 
