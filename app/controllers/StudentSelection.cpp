@@ -1,6 +1,5 @@
 #include <string.h>
 #include <iostream>
-#include "../types/StudentSelectionType.cpp"
 
 class StudentSelection
 {
@@ -11,6 +10,7 @@ private:
         string name, string originSchool, float testScore);
     StudentSelectionChainType *connectChain(StudentSelectionChainType *newChain);
     void initiate();
+    void successMessage();
 
 public:
     StudentSelection();
@@ -38,6 +38,11 @@ StudentSelection& StudentSelection::from(StudentSelectionChainType *candidates) 
     StudentSelection::object.initiate();
     StudentSelection::chain = candidates;
     return StudentSelection::object;
+}
+
+void StudentSelection::successMessage() {
+    cout << "Data berhasil dimasukkan ke entri." 
+        << endl << endl;
 }
 
 StudentSelectionChainType *StudentSelection::connectChain(StudentSelectionChainType *newChain) {
@@ -71,6 +76,7 @@ StudentSelectionChainType *StudentSelection::addChain(string testId,
     candidate->testScore = testScore;
     candidate->next = NULL;
     this->connectChain(candidate);
+    this->successMessage();
 
     return StudentSelection::chain;
 }
