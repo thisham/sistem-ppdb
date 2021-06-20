@@ -23,6 +23,7 @@ class EliminateCandidate
       StudentSelectionChainType *candidates);
     static void help();
     StudentSelectionChainType *eliminate();
+    void listRelease();
 };
 
 StudentSelectionChainType *EliminateCandidate::chain;
@@ -97,4 +98,23 @@ StudentSelectionChainType *EliminateCandidate::eliminate() {
 void EliminateCandidate::successMessage() {
     cout << "Peserta didik berhasil diseleksi." 
         << endl << endl;
+}
+
+void EliminateCandidate::listRelease() {
+  cout 
+    << "No.\tNo. Ujian\tNama\t\tNilai Ujian" << endl
+    << "--------------------------------------------" << endl;
+  
+  StudentSelectionChainType *walkerChain = new StudentSelectionChainType;
+  walkerChain = EliminateCandidate::chain;
+  int counter = 1;
+
+  while (!walkerChain) {
+    cout
+      << counter++ << "\t" 
+      << walkerChain->testEntryId << "\t"
+      << walkerChain->name << "\t"
+      << walkerChain->testScore << endl;
+    walkerChain = walkerChain->next;
+  }
 }

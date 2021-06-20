@@ -60,6 +60,12 @@ class Console
             else if (instruction.compare("eliminasi") == 0 && !this->regTime) 
                 this->candidates = *EliminateCandidate::from(&this->candidates).eliminate();
 
+            else if (instruction.compare("seleksi.rilis") == 0 && this->regTime)
+                this->preCloseMessage();
+
+            else if (instruction.compare("seleksi.rilis") == 0 && !this->regTime) 
+                EliminateCandidate::from(&this->candidates).listRelease();
+
             else if (instruction.compare(".exit") == 0) 
                 this->running = false;
 
