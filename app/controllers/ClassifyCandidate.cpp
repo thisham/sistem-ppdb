@@ -4,11 +4,12 @@
 class ClassifyCandidate
 {
   private:
-    static StudentSelectionChainType *chain;
+    static StudentSelectionChainType chain;
     static ClassifyCandidate object;
-    ClassesType *classes;
+    ClassesType classes;
+    int summ;
     int capacity;
-    EdgeType *edges;
+    EdgeType edges;
     int maxClasses;
     void connectClass(ClassesType *newClass);
     void connectEdge(EdgeType *newEdge);
@@ -21,19 +22,20 @@ class ClassifyCandidate
   public:
     ClassifyCandidate();
     ~ClassifyCandidate();
-    static ClassesType *classInit();
+    static ClassesType classInit();
     static ClassifyCandidate& from(
-      StudentSelectionChainType *candidates
+      StudentSelectionChainType candidates
     );
     ClassifyCandidate& useClasses(
-      ClassesType *classes_
+      ClassesType classes_
     );
-    EdgeType *classify();
+    ClassifyCandidate& useSumm(int summ_);
+    EdgeType classify();
     void classRelease();
     void help();
 };
 
-StudentSelectionChainType *ClassifyCandidate::chain;
+StudentSelectionChainType ClassifyCandidate::chain;
 ClassifyCandidate ClassifyCandidate::object;
 
 ClassifyCandidate::ClassifyCandidate() {
@@ -48,16 +50,21 @@ void ClassifyCandidate::initiate() {
 }
 
 ClassifyCandidate& ClassifyCandidate::from(
-  StudentSelectionChainType *candidates) {
+  StudentSelectionChainType candidates) {
   ClassifyCandidate::object.initiate();
   ClassifyCandidate::chain = candidates;
   return ClassifyCandidate::object;
 }
 
 ClassifyCandidate& ClassifyCandidate::useClasses(
-  ClassesType *classes_) {
+  ClassesType classes_) {
   ClassifyCandidate::object.classes = classes_;
   return ClassifyCandidate::object;
+}
+
+ClassifyCandidate& ClassifyCandidate::useSumm(int summ_) {
+  this->summ = summ_;
+  return *this;
 }
 
 void ClassifyCandidate::setClassCapacity() {
@@ -71,8 +78,7 @@ void ClassifyCandidate::setClassCapacity() {
   this->maxClasses = classNum;
   this->capacity = maxCapacity;
 
-  if ((maxCapacity * classNum) 
-    < StudentSelection::from(this->chain).count()) {
+  if ((maxCapacity * classNum) < this->summ) {
     cout
       << "Kapasitas kelas angkatan kurang dari jumlah peserta didik yang diterima."
       << endl << endl;
@@ -82,11 +88,11 @@ void ClassifyCandidate::setClassCapacity() {
 
 void ClassifyCandidate::connectClass(ClassesType *newClass) {
   ClassesType *walkerClass = new ClassesType;
-  walkerClass = this->classes;
+  walkerClass = &this->classes;
 
   if (walkerClass) {
     walkerClass = newClass;
-    ClassifyCandidate::classes = walkerClass;
+    ClassifyCandidate::classes = *walkerClass;
     return;
   }
 
@@ -107,7 +113,7 @@ void ClassifyCandidate::initiateClasses() {
   }
 }
 
-ClassesType *ClassifyCandidate::classInit() {
+ClassesType ClassifyCandidate::classInit() {
   ClassifyCandidate::object.setClassCapacity();
   ClassifyCandidate::object.initiateClasses();
   return ClassifyCandidate::object.classes;
@@ -115,11 +121,11 @@ ClassesType *ClassifyCandidate::classInit() {
 
 void ClassifyCandidate::connectEdge(EdgeType *newEdge) {
   EdgeType *walkerEdge = new EdgeType;
-  walkerEdge = this->edges;
+  walkerEdge = &this->edges;
 
   if (walkerEdge) {
     walkerEdge = newEdge;
-    this->edges = walkerEdge;
+    this->edges = *walkerEdge;
     return;
   }
 
@@ -134,11 +140,11 @@ void ClassifyCandidate::divide() {
   int counter; 
   int klaas = 0;
   ClassesType *walkerClass = new ClassesType;
-  walkerClass = this->classes;
+  walkerClass = &this->classes;
 
   StudentSelectionChainType *walkerStudent 
     = new StudentSelectionChainType;
-  walkerStudent = this->chain;
+  walkerStudent = &this->chain;
 
   while (!walkerClass && klaas < this->maxClasses) {
     counter = 0;
@@ -162,7 +168,7 @@ void ClassifyCandidate::successMessage() {
     << endl << endl;
 }
 
-EdgeType *ClassifyCandidate::classify() {
+EdgeType ClassifyCandidate::classify() {
   this->divide();
   this->successMessage();
   return this->edges;
