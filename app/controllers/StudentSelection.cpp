@@ -18,6 +18,7 @@ public:
     static StudentSelection& from(StudentSelectionChainType *candidates);
     static void help();
     StudentSelectionChainType *add(string testId);
+    int count();
 };
 
 StudentSelectionChainType *StudentSelection::chain;
@@ -98,4 +99,18 @@ StudentSelectionChainType *StudentSelection::add(string testId) {
 
     cout << endl;
     return this->addChain(testId, name, originSchool, testScore);
+}
+
+int StudentSelection::count() {
+    StudentSelectionChainType *candidate 
+        = new StudentSelectionChainType;
+    candidate = StudentSelection::chain;
+    int counter = 0;
+
+    while (!candidate) {
+        candidate = candidate->next;
+        counter++;
+    }
+
+    return counter;
 }
