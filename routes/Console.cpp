@@ -1,10 +1,11 @@
 #include "../vendor/commander/Commander.cpp"
 #include "../app/types/StudentSelectionType.cpp"
 #include "../app/types/ClassesType.cpp"
+#include "../app/controllers/ClassifyCandidate.cpp"
+#include "../app/controllers/EliminateCandidate.cpp"
 #include "../app/controllers/RegistrationQueue.cpp"
 #include "../app/controllers/StudentSelection.cpp"
-#include "../app/controllers/EliminateCandidate.cpp"
-#include "../app/controllers/ClassifyCandidate.cpp"
+
 
 class Console
 {
@@ -83,7 +84,7 @@ class Console
                 this->preCloseMessage();
             
             else if (instruction.compare("kelas.rilis") == 0 && !this->regTime) {
-                this->overtimeMessage();
+                // code...
             }
 
             else if (instruction.compare(".exit") == 0) 
