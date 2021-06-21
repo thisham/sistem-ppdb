@@ -1,8 +1,10 @@
 #include "../vendor/commander/Commander.cpp"
 #include "../app/types/StudentSelectionType.cpp"
+#include "../app/types/ClassesType.cpp"
 #include "../app/controllers/RegistrationQueue.cpp"
 #include "../app/controllers/StudentSelection.cpp"
 #include "../app/controllers/EliminateCandidate.cpp"
+#include "../app/controllers/ClassifyCandidate.cpp"
 
 class Console
 {
@@ -13,6 +15,8 @@ class Console
 
         RegistrantQueueType registrants;
         StudentSelectionChainType candidates;
+        ClassesType classes;
+        EdgeType edges;
 
         string getInstruction() {
             cout << "> ";
@@ -65,6 +69,22 @@ class Console
 
             else if (instruction.compare("seleksi.rilis") == 0 && !this->regTime) 
                 EliminateCandidate::from(&this->candidates).listRelease();
+
+            else if (instruction.compare("kelas") == 0 && this->regTime)
+                this->preCloseMessage();
+
+            else if (instruction.compare("kelas") == 0 && !this->regTime) {
+                this->classes = *ClassifyCandidate::classInit();
+                this->edges = *ClassifyCandidate::from(&this->candidates)
+                    .useClasses(&this->classes).classify();
+            }
+
+            else if (instruction.compare("kelas.rilis") == 0 && this->regTime)
+                this->preCloseMessage();
+            
+            else if (instruction.compare("kelas.rilis") == 0 && !this->regTime) {
+                this->overtimeMessage();
+            }
 
             else if (instruction.compare(".exit") == 0) 
                 this->running = false;
