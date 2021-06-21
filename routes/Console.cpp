@@ -1,12 +1,8 @@
 #include "../vendor/commander/Commander.cpp"
 #include "../app/types/StudentSelectionType.cpp"
-#include "../app/types/ClassesType.cpp"
 #include "../app/controllers/StudentSelection.cpp"
-#include "../app/controllers/ClassifyCandidate.cpp"
-#include "../app/controllers/EdgeReader.cpp"
-#include "../app/controllers/EliminateCandidate.cpp"
 #include "../app/controllers/RegistrationQueue.cpp"
-
+#include "../app/controllers/SouvenirStack.cpp"
 
 class Console
 {
@@ -19,8 +15,7 @@ class Console
 
         RegistrantQueueType registrants;
         StudentSelectionChainType candidates;
-        ClassesType classes;
-        EdgeType edges;
+        SouvenirStackType souvenirs;
 
         string getInstruction() {
             cout << "> ";
@@ -64,6 +59,7 @@ class Console
                     if (registrantTemp.compare("0") != 0) {
                         this->candidates = StudentSelection::from(this->candidates)
                             .add(registrantTemp);
+                        this->souvenirs = SouvenirStack::from(this->souvenirs).pop();
                         this->summ += 1;
                     }
                 }
@@ -72,38 +68,11 @@ class Console
             else if (instruction.compare("panggil") == 0 && !this->regTime)
                 this->overtimeMessage();
 
-            else if (instruction.compare("tutup") == 0 && this->regTime) 
-                this->regTime = false;
+            else if (instruction.compare("seragam.status") == 0)
+                SouvenirStack::from(this->souvenirs).count();
 
-            else if (instruction.compare("tutup") == 0 && !this->regTime)
-                this->overtimeMessage();
-
-            // else if (instruction.compare("seleksi") == 0 && this->regTime)
-            //     this->preCloseMessage();
-
-            // else if (instruction.compare("seleksi") == 0 && !this->regTime) 
-            //     this->candidates = EliminateCandidate::from(this->candidates).eliminate();
-
-            // else if (instruction.compare("seleksi.rilis") == 0 && this->regTime)
-            //     this->preCloseMessage();
-
-            // else if (instruction.compare("seleksi.rilis") == 0 && !this->regTime) 
-            //     EliminateCandidate::from(this->candidates).listRelease();
-
-            else if (instruction.compare("kelas") == 0 && this->regTime)
-                this->preCloseMessage();
-
-            else if (instruction.compare("kelas") == 0 && !this->regTime) {
-                this->classes = ClassifyCandidate::classInit();
-                this->edges = ClassifyCandidate::from(this->candidates)
-                    .useClasses(this->classes).classify();
-            }
-
-            else if (instruction.compare("kelas.rilis") == 0 && this->regTime)
-                this->preCloseMessage();
-            
-            else if (instruction.compare("kelas.rilis") == 0 && !this->regTime) 
-                EdgeReader::useEdges(&this->edges).print();
+            else if (instruction.compare("seragam.tambah") == 0) 
+                this->souvenirs = SouvenirStack::from(this->souvenirs).add();
 
             else if (instruction.compare(".exit") == 0) 
                 this->running = false;
@@ -123,6 +92,9 @@ class Console
         Console() {
             this->running = true;
             this->regTime = false;
+            this->summ = 0;
+            this->souvenirs.count = 0;
+            this->souvenirs.top = NULL;
             this->registrants.count = 0;
             this->registrants.front = NULL;
             this->registrants.rear = NULL;
